@@ -1,0 +1,1 @@
+C:\Users\pon07\바탕 화면\OpenGL_Practice\Shaders_Interpolation\x64\Debug\Shaders_Interpolation.exe

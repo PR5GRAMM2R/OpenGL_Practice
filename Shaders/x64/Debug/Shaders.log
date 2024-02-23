@@ -1,0 +1,5 @@
+﻿  main.cpp
+C:\Users\pon07\바탕 화면\OpenGL_Practice\Shaders\main.cpp(173,19): warning C4244: '초기화 중': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Shaders.vcxproj -> C:\Users\pon07\바탕 화면\OpenGL_Practice\Shaders\x64\Debug\Shaders.exe
+  'pwsh.exe'은(는) 내부 또는 외부 명령, 실행할 수 있는 프로그램, 또는
+  배치 파일이 아닙니다.
