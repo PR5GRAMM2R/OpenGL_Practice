@@ -37,14 +37,14 @@ int main()
 		return -1;
 	}
 
-	glfwMakeContextCurrent(window);
+	glfwMakeContextCurrent(window);		// Double Buffer로 사용할 Window를 등록하는 함수이며, 등록되면 Thread로 설정되어 사용됨
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {  
 		std::cout << "Failed to initialize GLAD" << std::endl;	// GLAD 가 제대로 초기화되지 않을 경우 에러 출력
 		return -1;
 	}
 
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);	// 창의 크기가 변경될 시 변경된 창의 가르, 세로 프레임에 따라 framebuffer_size_callback 호출
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);	// 창의 크기가 변경될 시 변경된 창의 가로, 세로 프레임에 따라 framebuffer_size_callback 호출
 
     // build and compile our shader program
     // ------------------------------------
@@ -94,7 +94,7 @@ int main()
 						//	GL_STATIC_DRAW	: 데이터 변경 X, 자주 쓰임
 						//	GL_DYNAMIC_DRAW	: 데이터가 자주 변경됨, 자주 쓰임
 
-	unsigned int EBO;	// 정점을 명시하는 데에 중복이 발생하기에 일한 중복을 피하고자 사용하는 EBO (Element Buffer Objects) <- 인덱스를 저장
+	unsigned int EBO;	// 정점을 명시하는 데에 중복이 발생하기에 이러한 중복을 피하고자 사용하는 EBO (Element Buffer Objects) <- 인덱스를 저장
 	glGenBuffers(1, &EBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);	// GL_ELEMENT_ARRAY_BUFFER 를 버퍼 타겟으로 지정
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
@@ -127,7 +127,7 @@ int main()
 	int width, height, nrChannels;
 	unsigned int texture1, texture2;
 
-	stbi_set_flip_vertically_on_load(true);
+	stbi_set_flip_vertically_on_load(true);		// 뒤집어진 이미지 출력을 정상적으로 출력되게 함
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
