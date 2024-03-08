@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{f279be11-6f79-4a72-b7f0-38348e9123ae}</ProjectGuid>
-    <RootNamespace>CoordinateSystem</RootNamespace>
+    <ProjectGuid>{98fa8fbd-139d-44c0-8b06-5ecf667c136e}</ProjectGuid>
+    <RootNamespace>My11CoordinateSystem3DCubes</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
