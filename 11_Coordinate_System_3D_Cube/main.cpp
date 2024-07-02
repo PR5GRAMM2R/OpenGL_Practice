@@ -50,17 +50,148 @@ int main()
     // ------------------------------------
     Shader ourShader("shaders/shader.vs", "shaders/shader.fs"); // you can name your shader files however you like
 
-    float vertices[] = {	// 각각 (x 좌표, y 좌표, z 좌표) 인 정점들 <- normalized device coordinates 내부의 정점들
-		// Position				// Colors				// Texture Coordinates
-		0.5f	, 0.5f	, 0.0f	, 1.0f	, 0.0f	, 0.0f	, 1.0f	, 1.0f	,	// 우상단
-		0.5f	, -0.5f	, 0.0f	, 0.0f	, 1.0f	, 0.0f	, 1.0f	, 0.0f	,	// 우하단
-		-0.5f	, -0.5f	, 0.0f	, 0.0f	, 0.0f	, 1.0f	, 0.0f	, 0.0f	,	// 좌하단
-		-0.5f	, 0.5f	, 0.0f	, 1.0f	, 1.0f	, 1.0f	, 0.0f	, 1.0f		// 좌상단
+ //   float vertices[] = {	// 각각 (x 좌표, y 좌표, z 좌표) 인 정점들 <- normalized device coordinates 내부의 정점들
+	//	// Position				// Colors				// Texture Coordinates
+	//	0.5f	, 0.5f	, 0.0f	, 1.0f	, 0.0f	, 0.0f	, 1.0f	, 1.0f	,	// 우상단
+	//	0.5f	, -0.5f	, 0.0f	, 0.0f	, 1.0f	, 0.0f	, 1.0f	, 0.0f	,	// 우하단
+	//	-0.5f	, -0.5f	, 0.0f	, 0.0f	, 0.0f	, 1.0f	, 0.0f	, 0.0f	,	// 좌하단
+	//	-0.5f	, 0.5f	, 0.0f	, 1.0f	, 1.0f	, 1.0f	, 0.0f	, 1.0f		// 좌상단
+	//};
+
+
+	glm::vec3 cubePositions[] = {
+		glm::vec3( 0.0f,  0.0f,  0.0f), 
+		glm::vec3( 2.0f,  5.0f, -15.0f), 
+		glm::vec3(-1.5f, -2.2f, -2.5f),  
+		glm::vec3(-3.8f, -2.0f, -12.3f),  
+		glm::vec3( 2.4f, -0.4f, -3.5f),  
+		glm::vec3(-1.7f,  3.0f, -7.5f),  
+		glm::vec3( 1.3f, -2.0f, -2.5f),  
+		glm::vec3( 1.5f,  2.0f, -2.5f), 
+		glm::vec3( 1.5f,  0.2f, -1.5f), 
+		glm::vec3(-1.3f,  1.0f, -1.5f)  
 	};
 
-	unsigned int indices[] = {  
-        0, 1, 3, // first triangle
-        1, 2, 3  // second triangle
+
+	float vertices[] = {	// 각각 (x 좌표, y 좌표, z 좌표) 인 정점들 <- normalized device coordinates 내부의 정점들
+		// Position			  // Texture Coordinates
+
+		// 윗면
+		0.5f,	0.5f,	-0.5f,		1.0f,	1.0f,
+		0.5f,	0.5f,	0.5f,		1.0f,	0.0f,
+		-0.5f,	0.5f,	0.5f,		0.0f,	0.0f,
+		-0.5f,	0.5f,	-0.5f,		0.0f,	1.0f,
+
+		// 앞면
+		0.5f,	0.5f,	0.5f,		1.0f,	1.0f,
+		0.5f,	-0.5f,	0.5f,		1.0f,	0.0f,
+		-0.5f,	-0.5f,	0.5f,		0.0f,	0.0f,
+		-0.5f,	0.5f,	0.5f,		0.0f,	1.0f,
+		
+		// 아랫면
+		0.5f,	-0.5f,	0.5f,		1.0f,	1.0f,
+		0.5f,	-0.5f,	-0.5f,		1.0f,	0.0f,
+		-0.5f,	-0.5f,	-0.5f,		0.0f,	0.0f,
+		-0.5f,	-0.5f,	0.5f,		0.0f,	1.0f,
+
+		// 뒷면
+		0.5f,	-0.5f,	-0.5f,		1.0f,	1.0f,
+		0.5f,	0.5f,	-0.5f,		1.0f,	0.0f,
+		-0.5f,	0.5f,	-0.5f,		0.0f,	0.0f,
+		-0.5f,	-0.5f,	-0.5f,		0.0f,	1.0f,
+
+		// 왼쪽면
+		-0.5f,	0.5f,	0.5f,		1.0f,	1.0f,
+		-0.5f,	-0.5f,	0.5f,		1.0f,	0.0f,
+		-0.5f,	-0.5f,	-0.5f,		0.0f,	0.0f,
+		-0.5f,	0.5f,	-0.5f,		0.0f,	1.0f,
+
+		// 오른쪽면
+		0.5f,	0.5f,	-0.5f,		1.0f,	1.0f,
+		0.5f,	-0.5f,	-0.5f,		1.0f,	0.0f,
+		0.5f,	-0.5f,	0.5f,		0.0f,	0.0f,
+		0.5f,	0.5f,	0.5f,		0.0f,	1.0f
+		
+		/*-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f*/
+	};
+
+	unsigned int indices[] = {
+		// 윗면
+		0,	1,	3,
+		1,	2,	3,
+
+		// 앞면
+		4,	5,	7,
+		5,	6,	7,
+
+		// 아랫면
+		8,	9,	11,
+		9,	10,	11,
+
+		// 뒷면
+		12,	13,	15,
+		13,	14,	15,
+
+		// 왼쪽면
+		16,	17,	19,
+		17,	18,	19,
+
+		// 오른쪽면
+		20,	21,	23,
+		21,	22,	23
+
+        /*0, 1, 2,
+		3, 4, 5,
+		6, 7, 8,
+		9, 10, 11,
+		12, 13, 14,
+		15, 16, 17,
+		18, 19, 20,
+		21, 22, 23,
+		24, 25, 26,
+		27, 28, 29,
+		30, 31, 32,
+		33, 34, 35*/
     };
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,17 +239,17 @@ int main()
 	//								// glVertexAttribPointer(vertex 의 속성, vertex 의 크기, 데이터의 타입, 정규화 여부, vertex 간의 간격, 버퍼에서 데이터가 시작하는 위치의 offset) 설정
 	//glEnableVertexAttribArray(0);	// glVertexAttribPointer 에서 설정한 vertex 의 정점 속성을 활성화
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 									// glVertexAttribPointer(vertex 의 속성, vertex 의 크기, 데이터의 타입, 정규화 여부, vertex 간의 간격, 버퍼에서 데이터가 시작하는 위치의 offset) 설정
 	glEnableVertexAttribArray(0);	// glVertexAttribPointer 에서 설정한 vertex 의 정점 속성을 활성화
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 									// glVertexAttribPointer(vertex 의 속성, vertex 의 크기, 데이터의 타입, 정규화 여부, vertex 간의 간격, 버퍼에서 데이터가 시작하는 위치의 offset) 설정
 	glEnableVertexAttribArray(1);	// glVertexAttribPointer 에서 설정한 vertex 의 정점 속성을 활성화
 
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-									// glVertexAttribPointer(vertex 의 속성, vertex 의 크기, 데이터의 타입, 정규화 여부, vertex 간의 간격, 버퍼에서 데이터가 시작하는 위치의 offset) 설정
-	glEnableVertexAttribArray(2);	// glVertexAttribPointer 에서 설정한 vertex 의 정점 속성을 활성화
+	//glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	//								// glVertexAttribPointer(vertex 의 속성, vertex 의 크기, 데이터의 타입, 정규화 여부, vertex 간의 간격, 버퍼에서 데이터가 시작하는 위치의 offset) 설정
+	//glEnableVertexAttribArray(2);	// glVertexAttribPointer 에서 설정한 vertex 의 정점 속성을 활성화
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////// Textures ///////////////////////////////////////////////////
@@ -197,7 +328,7 @@ int main()
 	/////////////////////////////////////////////// View Matrix //////////////////////////////////////////////////
 
 	glm::mat4 view = glm::mat4(1.0f);
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -1.5f));
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
 
 	/////////////////////////////////////////// Projection Matrix ////////////////////////////////////////////////
 
@@ -207,6 +338,8 @@ int main()
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////// 출력 //////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	glEnable(GL_DEPTH_TEST); // Z-Buffer (깊이 버퍼) 를 활성화
 
     // render loop
     // -----------
@@ -235,12 +368,20 @@ int main()
 		//glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));	// uniform 변수에 행렬을 전달하는 함수를 사용
 		//																		//	(uniform 변수의 위치, 전달할 행렬의 개수, 전치행렬로 변환(transpose)할 지의 여부, 전달할 행렬의 data)
 
-		int modelLoc = glGetUniformLocation(ourShader.ID, "model");
+		model = glm::rotate(model, (float)sin(glfwGetTime()) * glm::radians(5.0f), glm::vec3(0.5f, 1.0f, 0.0f));	/////////////
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Z-Buffer (깊이 버퍼) 를 비워 줌 (초기화)
+
+		ourShader.setMat4("model", model);
+		ourShader.setMat4("view", view);
+		ourShader.setMat4("projection", projection);
+
+		/*int modelLoc = glGetUniformLocation(ourShader.ID, "model");
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		int viewLoc = glGetUniformLocation(ourShader.ID, "view");
+		int viewLoc = glGetUniformLocation(ourShader.ID, "view");                                                                                                                                                                                                    
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		int projectionLoc = glGetUniformLocation(ourShader.ID, "projection");
-		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));*/
 
 		//model = glm::rotate(model, glm::radians(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 
@@ -259,7 +400,18 @@ int main()
 		//glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);	// uniform 변수에 4개의 float 변수를 넣음 (outColor 가 vec4 타입이기 때문)
 
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);	// 삼각형을 그리는데 총 6개의 정점들 (삼각형 두 개) 을 그림 <- EBO 사용
+
+		/*for(unsigned int i = 0; i < 10; i++)
+		{
+		  model = glm::translate(model, cubePositions[i]);
+		  float angle = 20.0f * i; 
+		  model = glm::rotate(model, (float)sin(glfwGetTime()) * glm::radians(5.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+		  ourShader.setMat4("model", model);
+
+		  glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		}*/
+
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);	// 삼각형을 그리는데 총 6개의 정점들 (삼각형 두 개) 을 그림 <- EBO 사용
 		//glBindVertexArray(0);
 
 		//glDrawArrays(GL_TRIANGLES, 0, 3);	// 삼각형을 그리는데 3개의 정점을 그림 <- VAO 사용
