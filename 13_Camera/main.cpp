@@ -253,12 +253,20 @@ int main()
 
 	/////////////////////////////////////////////// View Matrix //////////////////////////////////////////////////
 
-	glm::mat4 view = glm::mat4(1.0f);
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+	/*glm::mat4 view = glm::mat4(1.0f);
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));*/	
+
+	/*float radius = 10.0f;
+	float camX = sin(glfwGetTime()) * radius;
+	float camZ = cos(glfwGetTime()) * radius;
+	glm::mat4 view;
+	view = glm::lookAt(glm::vec3(camX, 0.0, camZ), 
+						glm::vec3(0.0, 0.0, 0.0), 
+						glm::vec3(0.0, 1.0, 0.0));  */
 
 	/////////////////////////////////////////// Projection Matrix ////////////////////////////////////////////////
 
-	glm::mat4 projection;
+	glm::mat4 projection = glm::mat4(1.0f);
 	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -289,6 +297,14 @@ int main()
 		//model = glm::rotate(model, (float)sin(glfwGetTime()) * glm::radians(5.0f), glm::vec3(0.5f, 1.0f, 0.0f));	/////////////
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Z-Buffer (깊이 버퍼) 를 비워 줌 (초기화)
+
+		float radius = 10.0f;
+		float camX = sin(glfwGetTime()) * radius;
+		float camZ = cos(glfwGetTime()) * radius;
+		glm::mat4 view;									// 카메라가 피사체 주위를 빙빙 돌도록 만듦. ( lookAt 함수를 사용 )
+		view = glm::lookAt(glm::vec3(camX, 0.0, camZ),	// 카메라의 위치
+							glm::vec3(0.0, 0.0, 0.0),	// 피사체의 위치
+							glm::vec3(0.0, 1.0, 0.0));	// 위쪽 벡터
 
 		//ourShader.setMat4("model", model);
 		ourShader.setMat4("view", view);

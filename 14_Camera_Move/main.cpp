@@ -13,10 +13,26 @@
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
+
+float deltaTime = 0.0f;	// 마지막 프레임과 현재 프레임 사이의 시간
+float lastFrame = 0.0f; // 마지막 프레임의 시간
+
+glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);	// 카메라의 위치
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);	// 카메라의 앞쪽 방향
+glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);	// 위쪽 벡터
+
+bool firstMouse = true;
+float yaw   = -90.0f;	// yaw is initialized to -90.0 degrees since a yaw of 0.0 results in a direction vector pointing to the right so we initially rotate a bit to the left.
+float pitch =  0.0f;
+float lastX =  800.0f / 2.0;
+float lastY =  600.0 / 2.0;
+float fov   =  45.0f;
 
 int main()
 {
@@ -45,6 +61,10 @@ int main()
 	}
 
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);	// 창의 크기가 변경될 시 변경된 창의 가로, 세로 프레임에 따라 framebuffer_size_callback 호출
+
+	glfwSetCursorPosCallback(window, mouse_callback);	// 마우스의 위치 입력을 콜백함수를 통해 받아 옴
+
+	glfwSetScrollCallback(window, scroll_callback);		// 마우스의 스크롤 입력을 콜백함수를 통해 받아 옴
 
     // build and compile our shader program
     // ------------------------------------
@@ -255,17 +275,28 @@ int main()
 
 	glm::mat4 view = glm::mat4(1.0f);
 	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+	//view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+	/*float radius = 10.0f;
+	float camX = sin(glfwGetTime()) * radius;
+	float camZ = cos(glfwGetTime()) * radius;
+	glm::mat4 view;
+	view = glm::lookAt(glm::vec3(camX, 0.0, camZ), 
+						glm::vec3(0.0, 0.0, 0.0), 
+						glm::vec3(0.0, 1.0, 0.0));  */
 
 	/////////////////////////////////////////// Projection Matrix ////////////////////////////////////////////////
 
-	glm::mat4 projection;
-	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+	glm::mat4 projection = glm::mat4(1.0f);
+	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////// 출력 //////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	glEnable(GL_DEPTH_TEST); // Z-Buffer (깊이 버퍼) 를 활성화
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);	// 마우스가 창 안에서 보이지 않도록 설정
 
     // render loop
     // -----------
@@ -286,9 +317,25 @@ int main()
 
 		ourShader.use();	// 쉐이더들을 연결한 shaderProgram 을 사용하여 렌더링
 
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
 		//model = glm::rotate(model, (float)sin(glfwGetTime()) * glm::radians(5.0f), glm::vec3(0.5f, 1.0f, 0.0f));	/////////////
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Z-Buffer (깊이 버퍼) 를 비워 줌 (초기화)
+
+		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);	// 카메라의 위치 변화에 따른 시점 이동
+
+		projection = glm::perspective(glm::radians(fov), 800.0f / 600.0f, 0.1f, 1000.0f);	// 카메라의 시야 변화
+
+		//float radius = 10.0f;
+		//float camX = sin(glfwGetTime()) * radius;
+		//float camZ = cos(glfwGetTime()) * radius;
+		//glm::mat4 view;									// 카메라가 피사체 주위를 빙빙 돌도록 만듦. ( lookAt 함수를 사용 )
+		//view = glm::lookAt(glm::vec3(camX, 0.0, camZ),	// 카메라의 위치
+		//					glm::vec3(0.0, 0.0, 0.0),	// 피사체의 위치
+		//					glm::vec3(0.0, 1.0, 0.0));	// 위쪽 벡터
 
 		//ourShader.setMat4("model", model);
 		ourShader.setMat4("view", view);
@@ -336,6 +383,17 @@ void processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+	
+	float cameraSpeed = 25.0f * deltaTime;	// 각 프레임마다 이동시키도록 조치 (환경마다 프레임 간의 시간이 다르기 때문)
+
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)		// 키보드 W, S, A, D 입력에 따른 카메라 이동
+		cameraPos += cameraSpeed * cameraFront;
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		cameraPos -= cameraSpeed * cameraFront;
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -345,4 +403,49 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
+}
+
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	if(firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+	float xoffset = xpos - lastX;
+	float yoffset = lastY - ypos; // y 좌표의 범위는 밑에서부터 위로가기 때문에 반대로 바꿉니다.
+	lastX = xpos;
+	lastY = ypos;
+
+	float sensitivity = 0.05f;
+	xoffset *= sensitivity;
+	yoffset *= sensitivity;
+
+	yaw   += xoffset;
+	pitch += yoffset;
+
+	if(pitch > 89.0f)
+		pitch =  89.0f;
+	if(pitch < -89.0f)
+		pitch = -89.0f;
+
+	glm::vec3 front;
+	front.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
+	front.y = sin(glm::radians(pitch));
+	front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
+	cameraFront = glm::normalize(front);
+}
+
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+  if(fov >= 1.0f && fov <= 45.0f)
+  	fov -= yoffset;
+  if(fov <= 1.0f)
+  	fov = 1.0f;
+  if(fov >= 45.0f)
+  	fov = 45.0f;
 }
