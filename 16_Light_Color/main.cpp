@@ -13,7 +13,7 @@
 #include <iostream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window);
+void processInput(GLFWwindow* window);
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
@@ -31,18 +31,20 @@ float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
 
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+
 int main()
 {
-    glfwInit();		//  GLFW 를 초기화
+	glfwInit();		//  GLFW 를 초기화
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);	// OpenGL 버전이 3.* 이므로 MAJOR 와 MINOR 모두 3으로 설정
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 #ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);	// 창의 크기와 이름 등을 설정하여 생성
+	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);	// 창의 크기와 이름 등을 설정하여 생성
 
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;	// 창이 제대로 생성되지 않을 경우 에러 출력
@@ -58,27 +60,29 @@ int main()
 
 	glfwSetScrollCallback(window, scroll_callback);		// 마우스의 스크롤 입력을 콜백함수를 통해 받아 옴
 
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {  
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		std::cout << "Failed to initialize GLAD" << std::endl;	// GLAD 가 제대로 초기화되지 않을 경우 에러 출력
 		return -1;
 	}
 
-    // build and compile our shader program
-    // ------------------------------------
-    Shader ourShader("shaders/shader.vs", "shaders/shader.fs"); // you can name your shader files however you like
+	// build and compile our shader program
+	// ------------------------------------
+	Shader ourShader("shaders/shader.vs", "shaders/shader.fs"); // you can name your shader files however you like
+
+	Shader lightingShader("shaders/lightShader.vs", "shaders/lightShader.fs");
 
 
 	glm::vec3 cubePositions[] = {
-		glm::vec3( 0.0f,  0.0f,  0.0f), 
-		glm::vec3( 2.0f,  5.0f, -15.0f), 
-		glm::vec3(-1.5f, -2.2f, -2.5f),  
-		glm::vec3(-3.8f, -2.0f, -12.3f),  
-		glm::vec3( 2.4f, -0.4f, -3.5f),  
-		glm::vec3(-1.7f,  3.0f, -7.5f),  
-		glm::vec3( 1.3f, -2.0f, -2.5f),  
-		glm::vec3( 1.5f,  2.0f, -2.5f), 
-		glm::vec3( 1.5f,  0.2f, -1.5f), 
-		glm::vec3(-1.3f,  1.0f, -1.5f)  
+		glm::vec3(0.0f,  0.0f,  0.0f),
+		glm::vec3(2.0f,  5.0f, -15.0f),
+		glm::vec3(-1.5f, -2.2f, -2.5f),
+		glm::vec3(-3.8f, -2.0f, -12.3f),
+		glm::vec3(2.4f, -0.4f, -3.5f),
+		glm::vec3(-1.7f,  3.0f, -7.5f),
+		glm::vec3(1.3f, -2.0f, -2.5f),
+		glm::vec3(1.5f,  2.0f, -2.5f),
+		glm::vec3(1.5f,  0.2f, -1.5f),
+		glm::vec3(-1.3f,  1.0f, -1.5f)
 	};
 
 
@@ -86,40 +90,40 @@ int main()
 		// Position			  // Texture Coordinates
 
 		// 윗면
-		0.5f,	0.5f,	-0.5f,		1.0f,	1.0f,
-		0.5f,	0.5f,	0.5f,		1.0f,	0.0f,
-		-0.5f,	0.5f,	0.5f,		0.0f,	0.0f,
-		-0.5f,	0.5f,	-0.5f,		0.0f,	1.0f,
+		0.5f,	0.5f,	-0.5f,		//1.0f,	1.0f,
+		0.5f,	0.5f,	0.5f,		//1.0f,	0.0f,
+		-0.5f,	0.5f,	0.5f,		//0.0f,	0.0f,
+		-0.5f,	0.5f,	-0.5f,		//0.0f,	1.0f,
 
 		// 앞면
-		0.5f,	0.5f,	0.5f,		1.0f,	1.0f,
-		0.5f,	-0.5f,	0.5f,		1.0f,	0.0f,
-		-0.5f,	-0.5f,	0.5f,		0.0f,	0.0f,
-		-0.5f,	0.5f,	0.5f,		0.0f,	1.0f,
-		
+		0.5f,	0.5f,	0.5f,		//1.0f,	1.0f,
+		0.5f,	-0.5f,	0.5f,		//1.0f,	0.0f,
+		-0.5f,	-0.5f,	0.5f,		//0.0f,	0.0f,
+		-0.5f,	0.5f,	0.5f,		//0.0f,	1.0f,
+
 		// 아랫면
-		0.5f,	-0.5f,	0.5f,		1.0f,	1.0f,
-		0.5f,	-0.5f,	-0.5f,		1.0f,	0.0f,
-		-0.5f,	-0.5f,	-0.5f,		0.0f,	0.0f,
-		-0.5f,	-0.5f,	0.5f,		0.0f,	1.0f,
+		0.5f,	-0.5f,	0.5f,		//1.0f,	1.0f,
+		0.5f,	-0.5f,	-0.5f,		//1.0f,	0.0f,
+		-0.5f,	-0.5f,	-0.5f,		//0.0f,	0.0f,
+		-0.5f,	-0.5f,	0.5f,		//0.0f,	1.0f,
 
 		// 뒷면
-		0.5f,	-0.5f,	-0.5f,		1.0f,	1.0f,
-		0.5f,	0.5f,	-0.5f,		1.0f,	0.0f,
-		-0.5f,	0.5f,	-0.5f,		0.0f,	0.0f,
-		-0.5f,	-0.5f,	-0.5f,		0.0f,	1.0f,
+		0.5f,	-0.5f,	-0.5f,		//1.0f,	1.0f,
+		0.5f,	0.5f,	-0.5f,		//1.0f,	0.0f,
+		-0.5f,	0.5f,	-0.5f,		//0.0f,	0.0f,
+		-0.5f,	-0.5f,	-0.5f,		//0.0f,	1.0f,
 
 		// 왼쪽면
-		-0.5f,	0.5f,	0.5f,		1.0f,	1.0f,
-		-0.5f,	-0.5f,	0.5f,		1.0f,	0.0f,
-		-0.5f,	-0.5f,	-0.5f,		0.0f,	0.0f,
-		-0.5f,	0.5f,	-0.5f,		0.0f,	1.0f,
+		-0.5f,	0.5f,	0.5f,		//1.0f,	1.0f,
+		-0.5f,	-0.5f,	0.5f,		//1.0f,	0.0f,
+		-0.5f,	-0.5f,	-0.5f,		//0.0f,	0.0f,
+		-0.5f,	0.5f,	-0.5f,		//0.0f,	1.0f,
 
 		// 오른쪽면
-		0.5f,	0.5f,	-0.5f,		1.0f,	1.0f,
-		0.5f,	-0.5f,	-0.5f,		1.0f,	0.0f,
-		0.5f,	-0.5f,	0.5f,		0.0f,	0.0f,
-		0.5f,	0.5f,	0.5f,		0.0f,	1.0f
+		0.5f,	0.5f,	-0.5f,		//1.0f,	1.0f,
+		0.5f,	-0.5f,	-0.5f,		//1.0f,	0.0f,
+		0.5f,	-0.5f,	0.5f,		//0.0f,	0.0f,
+		0.5f,	0.5f,	0.5f,		//0.0f,	1.0f
 	};
 
 	unsigned int indices[] = {
@@ -146,7 +150,7 @@ int main()
 		// 오른쪽면
 		20,	21,	23,
 		21,	22,	23
-    };
+	};
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -163,36 +167,59 @@ int main()
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	unsigned int VAO;	// vertex 속성 포인터를 구성할 때 오직 한 번만 호출하기만 하면 되고
-						//		오브젝트를 그려야 할 때마다 해당 VAO를 바인딩 하기만 하면 된다는 장점을 가지고 있는 VAO (Vertex Array Object)
+	//		오브젝트를 그려야 할 때마다 해당 VAO를 바인딩 하기만 하면 된다는 장점을 가지고 있는 VAO (Vertex Array Object)
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
 	unsigned int VBO;	// 많은 양의 정점들을 GPU 메모리 상에 저장할 수 있는 VBO (Vertex Buffer Objects) 
-						//							<- CPU 에서 GPU 로 데이터를 보내는 속도가 느리기에 한꺼번에 많이 보내야 하기 때문에 사용
+	//							<- CPU 에서 GPU 로 데이터를 보내는 속도가 느리기에 한꺼번에 많이 보내야 하기 때문에 사용
 	glGenBuffers(1, &VBO);	// VBO 버퍼의 ID 설정
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);	// GL_ARRAY_BUFFER 를 타겟으로 하는 모든 버퍼는 VBO 를 사용하게 됨 (Binding Buffer)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);	// 현재 바인딩된 GL_ARRAY_BUFFER 에 앞서 설정한 vertices 배열을 넣음.
-						//	GL_STREAM_DRAW	: 데이터 변경 X, 거의 쓰이지 않음
-						//	GL_STATIC_DRAW	: 데이터 변경 X, 자주 쓰임
-						//	GL_DYNAMIC_DRAW	: 데이터가 자주 변경됨, 자주 쓰임
+	//	GL_STREAM_DRAW	: 데이터 변경 X, 거의 쓰이지 않음
+	//	GL_STATIC_DRAW	: 데이터 변경 X, 자주 쓰임
+	//	GL_DYNAMIC_DRAW	: 데이터가 자주 변경됨, 자주 쓰임
 
 	unsigned int EBO;	// 정점을 명시하는 데에 중복이 발생하기에 이러한 중복을 피하고자 사용하는 EBO (Element Buffer Objects) <- 인덱스를 저장
 	glGenBuffers(1, &EBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);	// GL_ELEMENT_ARRAY_BUFFER 를 버퍼 타겟으로 지정
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+
+	unsigned int lightVAO;
+	glGenVertexArrays(1, &lightVAO);
+	glBindVertexArray(lightVAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+	glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);	// GL_ELEMENT_ARRAY_BUFFER 를 버퍼 타겟으로 지정
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	// VBO를 바인딩 바인딩하기만 하면 됩니다. 컨테이너의 VBO 데이터는 이미 정확한 데이터를 가지고 있습니다.
+	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	// vertex attribute를 설정합니다(램프를 위한 위치 데이터만).
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	//glEnableVertexAttribArray(0);
+
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////// How to interperet Vertices ///////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-									// glVertexAttribPointer(vertex 의 속성, vertex 의 크기, 데이터의 타입, 정규화 여부, vertex 간의 간격, 버퍼에서 데이터가 시작하는 위치의 offset) 설정
-	glEnableVertexAttribArray(0);	// glVertexAttribPointer 에서 설정한 vertex 의 정점 속성을 활성화
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	// glVertexAttribPointer(vertex 의 속성, vertex 의 크기, 데이터의 타입, 정규화 여부, vertex 간의 간격, 버퍼에서 데이터가 시작하는 위치의 offset) 설정
+	//glEnableVertexAttribArray(0);	// glVertexAttribPointer 에서 설정한 vertex 의 정점 속성을 활성화
 
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-									// glVertexAttribPointer(vertex 의 속성, vertex 의 크기, 데이터의 타입, 정규화 여부, vertex 간의 간격, 버퍼에서 데이터가 시작하는 위치의 offset) 설정
-	glEnableVertexAttribArray(1);	// glVertexAttribPointer 에서 설정한 vertex 의 정점 속성을 활성화
+	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	// glVertexAttribPointer(vertex 의 속성, vertex 의 크기, 데이터의 타입, 정규화 여부, vertex 간의 간격, 버퍼에서 데이터가 시작하는 위치의 offset) 설정
+	//glEnableVertexAttribArray(1);	// glVertexAttribPointer 에서 설정한 vertex 의 정점 속성을 활성화
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////// Textures ///////////////////////////////////////////////////
@@ -279,14 +306,15 @@ int main()
 	float camX = sin(glfwGetTime()) * radius;
 	float camZ = cos(glfwGetTime()) * radius;
 	glm::mat4 view;
-	view = glm::lookAt(glm::vec3(camX, 0.0, camZ), 
-						glm::vec3(0.0, 0.0, 0.0), 
+	view = glm::lookAt(glm::vec3(camX, 0.0, camZ),
+						glm::vec3(0.0, 0.0, 0.0),
 						glm::vec3(0.0, 1.0, 0.0));  */
 
-	/////////////////////////////////////////// Projection Matrix ////////////////////////////////////////////////
+						/////////////////////////////////////////// Projection Matrix ////////////////////////////////////////////////
 
 	glm::mat4 projection = glm::mat4(1.0f);
 	projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 1000.0f);
+
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////// 출력 //////////////////////////////////////////////////////
@@ -296,13 +324,13 @@ int main()
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);	// 마우스가 창 안에서 보이지 않도록 설정
 
-    // render loop
-    // -----------
-    
+	// render loop
+	// -----------
+
 	while (!glfwWindowShouldClose(window)) {	// GLFW 가 종료되도록 (창을 닫도록) 지시받았는지 확인
 		processInput(window);
-
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);	// glClearColor 에서 설정한 색상으로 지워지게 됨 (하얀색으로 설정 -> 하얀색으로 지워짐)
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);	// 그린 삼각형의 내부를 채우지 않음
@@ -342,17 +370,34 @@ int main()
 		glBindVertexArray(VAO);
 
 		for (unsigned int i = 0; i < 10; i++)
-        {
-            // calculate the model matrix for each object and pass it to shader before drawing
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model, cubePositions[i]);
-            float angle = 20.0f * (pow(i, 1.1) + 1);
-            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+		{
+			// calculate the model matrix for each object and pass it to shader before drawing
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, cubePositions[i]);
+			float angle = 20.0f * (pow(i, 1.1) + 1);
+			model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 			model = glm::rotate(model, (float)sin(glfwGetTime()) * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
-            ourShader.setMat4("model", model);
+			ourShader.setMat4("model", model);
 
-            glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-        }
+			ourShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+			ourShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+
+			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		}
+
+
+		glBindVertexArray(lightVAO);
+
+		lightingShader.use();
+
+		lightingShader.setMat4("projection", projection);
+        lightingShader.setMat4("view", view);
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, lightPos);
+        model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+        lightingShader.setMat4("model", model);
+
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 		//glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);	// 삼각형을 그리는데 총 6개의 정점들 (삼각형 두 개) 을 그림 <- EBO 사용
 		//glBindVertexArray(0);
@@ -365,68 +410,68 @@ int main()
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // glfw: terminate, clearing all previously allocated GLFW resources.
-    // ------------------------------------------------------------------
-    glfwTerminate();
+	// glfw: terminate, clearing all previously allocated GLFW resources.
+	// ------------------------------------------------------------------
+	glfwTerminate();
 
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 
-    return 0;
+	return 0;
 }
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow *window)
+void processInput(GLFWwindow* window)
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-	
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+
 	float cameraSpeed = 25.0f * deltaTime;	// 각 프레임마다 이동시키도록 조치 (환경마다 프레임 간의 시간이 다르기 때문)
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)		// 키보드 W, S, A, D 입력에 따른 카메라 이동
 		camera.ProcessKeyboard(FORWARD, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, deltaTime);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, deltaTime);
+		camera.ProcessKeyboard(BACKWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		camera.ProcessKeyboard(LEFT, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		camera.ProcessKeyboard(RIGHT, deltaTime);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    // make sure the viewport matches the new window dimensions; note that width and 
-    // height will be significantly larger than specified on retina displays.
-    glViewport(0, 0, width, height);
+	// make sure the viewport matches the new window dimensions; note that width and 
+	// height will be significantly larger than specified on retina displays.
+	glViewport(0, 0, width, height);
 }
 
 
 void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 {
 	float xpos = static_cast<float>(xposIn);
-    float ypos = static_cast<float>(yposIn);
+	float ypos = static_cast<float>(yposIn);
 
-    if (firstMouse)
-    {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
+	if (firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
 
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // y 좌표의 범위는 밑에서부터 위로가기 때문에 반대로 바꿈
+	float xoffset = xpos - lastX;
+	float yoffset = lastY - ypos; // y 좌표의 범위는 밑에서부터 위로가기 때문에 반대로 바꿈
 
-    lastX = xpos;
-    lastY = ypos;
+	lastX = xpos;
+	lastY = ypos;
 
-    camera.ProcessMouseMovement(xoffset, yoffset);
+	camera.ProcessMouseMovement(xoffset, yoffset);
 }
 
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-  camera.ProcessMouseScroll(static_cast<float>(yoffset));
+	camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }
