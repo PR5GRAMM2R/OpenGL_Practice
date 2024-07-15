@@ -1,6 +1,7 @@
 #version 330 core
 out vec4 FragColor;
 
+// diffuse 텍스쳐와 specular 텍스쳐
 struct Material {
     sampler2D diffuse;
     sampler2D specular;    
@@ -9,6 +10,7 @@ struct Material {
 
 uniform Material material;
 
+// Directional Light
 struct DirLight {
     vec3 direction;
 	
@@ -19,10 +21,11 @@ struct DirLight {
 
 uniform DirLight dirLight;
 
+// Point Light
 struct PointLight{
     vec3 position;
 
-    float constant;
+    float constant;     // 거리에 따른 빛의 감쇠
     float linear;
     float quadratic;
 
@@ -34,13 +37,14 @@ struct PointLight{
 #define NR_POINT_LIGHTS 4
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 
+// Spot Light
 struct SpotLight {
     vec3 position;
     vec3 direction;
-    float cutOff;
-    float outerCutOff;
+    float cutOff;       // 안쪽 원뿔 각도
+    float outerCutOff;  // 바깥쪽 원뿔 각도
   
-    float constant;
+    float constant;     // 거리에 따른 빛의 감쇠
     float linear;
     float quadratic;
   
@@ -51,9 +55,9 @@ struct SpotLight {
 
 uniform SpotLight spotLight;
 
-in vec3 FragPos;  
-in vec3 Normal; 
-in vec2 TexCoords;
+in vec3 FragPos;    // 위치 벡터들
+in vec3 Normal;     // Normal Vector들
+in vec2 TexCoords;  // 텍스쳐 좌표들
 
 uniform vec3 viewPos;
 
@@ -80,7 +84,7 @@ void main()
     FragColor = vec4(result, 1.0);
 }
 
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)    // Directional Light 적용
 {
     vec3 lightDir = normalize(-light.direction);
 
@@ -99,7 +103,7 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     return (ambient + diffuse + specular);
 }
 
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)  // Point Light 적용
 {
     vec3 lightDir = normalize(light.position - fragPos);
 
@@ -125,7 +129,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     return (ambient + diffuse + specular);
 }
 
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
+vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)    // Spot Light 적용
 {
     vec3 lightDir = normalize(light.position - fragPos);
 
