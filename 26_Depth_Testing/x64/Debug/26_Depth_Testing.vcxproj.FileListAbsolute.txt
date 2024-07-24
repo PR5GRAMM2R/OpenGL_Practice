@@ -1,1 +1,0 @@
-C:\Users\pon07\Desktop\OpenGL_Practice\26_Depth_Testing\x64\Debug\26_Depth_Testing.exe
