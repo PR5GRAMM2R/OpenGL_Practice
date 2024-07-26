@@ -1,1 +1,0 @@
-C:\Users\pon07\Desktop\OpenGL_Practice\27_Stencil_Testing\x64\Debug\27_Stencil_Testing.exe
