@@ -1,7 +1,11 @@
 #include "Mesh.hpp"
 
 // constructor
+<<<<<<< HEAD
 Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)
+=======
+Mesh::Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures)		// 생성자
+>>>>>>> master
 {
 	this->vertices = vertices;
 	this->indices = indices;
@@ -51,6 +55,7 @@ void Mesh::Draw(Shader& shader)
 void Mesh::setupMesh()
 {
 	// create buffers/arrays
+<<<<<<< HEAD
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
@@ -64,15 +69,45 @@ void Mesh::setupMesh()
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+=======
+	glGenVertexArrays(1, &VAO);		// VAO 버퍼의 ID 설정
+	glGenBuffers(1, &VBO);			// VBO 버퍼의 ID 설정
+	glGenBuffers(1, &EBO);			// EBO 버퍼의 ID 설정
+
+	glBindVertexArray(VAO);			// Vertex 버퍼에 data 로드
+	// load data into vertex buffers
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);		// GL_ARRAY_BUFFER 를 타겟으로 하는 모든 버퍼는 VBO 를 사용하게 됨 (Binding Buffer)
+	// A great thing about structs is that their memory layout is sequential for all its items.
+	// The effect is that we can simply pass a pointer to the struct and it translates perfectly to a glm::vec3/2 array which
+	// again translates to 3/2 floats which translates to a byte array.
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);		
+						// 현재 바인딩된 GL_ARRAY_BUFFER 에 앞서 설정한 vertices 배열을 넣음.
+							//	GL_STREAM_DRAW	: 데이터 변경 X, 거의 쓰이지 않음
+							//	GL_STATIC_DRAW	: 데이터 변경 X, 자주 쓰임
+							//	GL_DYNAMIC_DRAW	: 데이터가 자주 변경됨, 자주 쓰임
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);		// GL_ELEMENT_ARRAY_BUFFER 를 버퍼 타겟으로 지정
+>>>>>>> master
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
 	// set the vertex attribute pointers
 	// vertex Positions
+<<<<<<< HEAD
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 	// vertex normals
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+=======
+	glEnableVertexAttribArray(0);		// glVertexAttribPointer 에서 설정한 vertex 의 정점 속성을 활성화
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+		// glVertexAttribPointer(vertex 의 속성, vertex 의 크기, 데이터의 타입, 정규화 여부, vertex 간의 간격, 버퍼에서 데이터가 시작하는 위치의 offset) 설정
+	// vertex normals
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+																			// offsetof(struct 타입, struct 변수의 이름) 
+																				// struct의 시작지점으로부터 입력된 변수까지의 바이트 offset을 리턴
+>>>>>>> master
 	// vertex texture coords
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));

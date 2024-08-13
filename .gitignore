@@ -32,6 +32,7 @@
 *.app
 
 # Ignoring '.64' and 'vs' directories
-**/x64/
-**/.vs/
-**/Visual Studio 2022/
+**/x64/**
+**/.vs/**
+**/Visual Studio 2022/**
+*/x64/**
