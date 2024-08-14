@@ -133,51 +133,94 @@ int main()
 
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
-	float cubeVertices[] = {
-	    // positions          // texture Coords
-	    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-	     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-	     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	float vertices[] = {
+        // positions          // Normal Vectors
+	    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	     0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	     0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	    -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	    -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-	    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-	    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+	     0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+	     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+	     0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+	    -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+	    -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
 
-	    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+	    -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+	    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+	    -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+	    -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+	    -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 
-	     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+	     0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+	     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+	     0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+	     0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+	     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
 
-	    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-	     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+	     0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+	     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+	     0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+	    -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+	    -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
 
-	    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-	    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+	    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+	     0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+	     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+	     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+	    -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+	    -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 	};
+	//float cubeVertices[] = {
+	//    // positions          // texture Coords
+	//    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	//     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+	//     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	//     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	//    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	//    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
+	//    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	//     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	//     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	//     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	//    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+	//    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+	//    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	//    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	//    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	//    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	//    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	//    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	//     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	//     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	//     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	//     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	//     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	//     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	//    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	//     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+	//     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	//     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	//    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	//    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+	//    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	//     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	//     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	//     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	//    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+	//    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+	//};
 	float skyboxVertices[] = {
 		// positions          
 		-1.0f,  1.0f, -1.0f,
@@ -229,11 +272,11 @@ int main()
     glGenBuffers(1, &cubeVBO);
     glBindVertexArray(cubeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 
     // plane VAO
     unsigned int skyboxVAO, skyboxVBO;
@@ -254,7 +297,7 @@ int main()
     // load textures
     // -------------
 
-    unsigned int cubeTexture = loadTexture("resources/textures/container2.png");
+    //unsigned int cubeTexture = loadTexture("resources/textures/container2.png");
 
     vector<std::string> faces
     {
@@ -271,7 +314,7 @@ int main()
     // shader configuration
     // --------------------
     shader.use();
-    shader.setInt("texture1", 0);
+    shader.setInt("skybox", 0);
 
     skyboxShader.use();
     skyboxShader.setInt("skybox", 0);
@@ -335,11 +378,11 @@ int main()
         shader.setMat4("model", model);
         shader.setMat4("view", view);
         shader.setMat4("projection", projection);
-        //shader.setVec3("cameraPos", camera.Position);
+        shader.setVec3("cameraPos", camera.Position);
         // cubes
         glBindVertexArray(cubeVAO);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, cubeTexture);
+        glBindTexture(GL_TEXTURE_2D, cubemapTexture);
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
 
