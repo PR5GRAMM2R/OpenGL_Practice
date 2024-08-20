@@ -31,14 +31,17 @@ void main() {
     gl_Position = explode(gl_in[0].gl_Position, normal);
     TexCoords = gs_in[0].texCoords;
     //gl_Position = gl_in[0].gl_Position;
+    //gl_PointSize = 5 / gl_Position.z;
     EmitVertex();
     gl_Position = explode(gl_in[1].gl_Position, normal);
     TexCoords = gs_in[1].texCoords;
     //gl_Position = gl_in[1].gl_Position;
+    //gl_PointSize = 5 / gl_Position.z;
     EmitVertex();
     gl_Position = explode(gl_in[2].gl_Position, normal);
     TexCoords = gs_in[2].texCoords;
     //gl_Position = gl_in[2].gl_Position;
+    //gl_PointSize = 5 / gl_Position.z;
     EmitVertex();
     EndPrimitive();
 }
