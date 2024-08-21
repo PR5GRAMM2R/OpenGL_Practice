@@ -2,7 +2,7 @@
 
 layout (location = 0) in vec3 aPos;
 layout (location = 2) in vec2 aTexCoords;
-layout (location = 3) in mat4 aInstanceMatrix;
+layout (location = 3) in mat4 aInstanceMatrix;  // Instance Randering 을 위한 Vertex Attribute
 
 out vec2 TexCoords;
 
