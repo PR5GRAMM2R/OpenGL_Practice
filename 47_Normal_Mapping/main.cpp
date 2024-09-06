@@ -48,6 +48,8 @@ bool shadowsKeyPressed = false;
 // meshes
 unsigned int planeVAO;
 
+glm::vec3 lightPos(0.5f, 1.0f, 0.3f);
+
 int main()
 {
     // glfw: initialize and configure
@@ -113,7 +115,7 @@ int main()
 
     // lighting info
     // -------------
-    glm::vec3 lightPos(0.5f, 1.0f, 0.3f);
+    //glm::vec3 lightPos(0.5f, 1.0f, 0.3f);
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,6 +131,8 @@ int main()
 		float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
+
+        processInput(window);
         
         // render
         // ------
@@ -268,6 +272,25 @@ void renderQuad()
 
 
 
+void processKeyboard(Camera_Movement direction, float deltaTime)
+{
+    float MovementSpeed = 1.0f;
+    glm::vec3 Front = glm::vec3(0.0f, 0.0f, -1.0f);
+    glm::vec3 Right = glm::vec3(1.0f, 0.0f, 0.0f);
+
+	float velocity = MovementSpeed * deltaTime;
+	if (direction == FORWARD)
+		lightPos += Front * velocity;
+	if (direction == BACKWARD)
+		lightPos -= Front * velocity;
+	if (direction == LEFT)
+		lightPos -= Right * velocity;
+	if (direction == RIGHT)
+		lightPos += Right * velocity;
+}
+
+
+
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow *window)
@@ -276,13 +299,17 @@ void processInput(GLFWwindow *window)
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera.ProcessKeyboard(FORWARD, deltaTime);
+        processKeyboard(FORWARD, deltaTime);
+        //camera.ProcessKeyboard(FORWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera.ProcessKeyboard(BACKWARD, deltaTime);
+        processKeyboard(BACKWARD, deltaTime);
+        //camera.ProcessKeyboard(BACKWARD, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera.ProcessKeyboard(LEFT, deltaTime);
+        processKeyboard(LEFT, deltaTime);
+        //camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera.ProcessKeyboard(RIGHT, deltaTime);
+        processKeyboard(RIGHT, deltaTime);
+        //camera.ProcessKeyboard(RIGHT, deltaTime);
 
     if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS && !blinnKeyPressed) 
     {
